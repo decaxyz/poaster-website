@@ -1,0 +1,160 @@
+---
+title: Structured Data Guide
+description: Best practices for building AI agent integrations with the Poaster API.
+---
+
+This guide covers how to build reliable AI agent integrations that interact with the Poaster API programmatically.
+
+## Discovery
+
+AI agents should start by fetching `llms.txt` to discover available endpoints:
+
+```
+https://poaster.app/docs/llms.txt
+```
+
+This provides a machine-readable summary of the entire API.
+
+## Authentication Pattern
+
+All requests require a Bearer token:
+
+```
+Authorization: Bearer po_live_xxxxxxxxxxxxxxxx
+```
+
+Agents should:
+- Store the API key securely (environment variable, secrets manager)
+- Never log or expose the raw token
+- Handle 401 errors by prompting for a new key
+
+## Common Workflows
+
+### Workflow 1: Submit and Publish
+
+The most common agent workflow: submit content, approve it, and send it.
+
+```python
+import requests
+
+BASE = "https://my.poaster.app"
+HEADERS = {
+    "Authorization": f"Bearer {API_KEY}",
+    "Content-Type": "application/json",
+}
+
+# 1. Create a post
+post_resp = requests.post(
+    f"{BASE}/websites/{website_id}/posts",
+    headers=HEADERS,
+    json={"content": "Your post text here"},
+)
+
+# 2. Approve it (if not auto-approved)
+requests.patch(
+    f"{BASE}/websites/{website_id}/posts/{post_id}/approve",
+    headers=HEADERS,
+)
+
+# 3. Send it
+requests.patch(
+    f"{BASE}/websites/{website_id}/posts/{post_id}/send_now_individual",
+    headers=HEADERS,
+)
+```
+
+### Workflow 2: Bulk Content Pipeline
+
+For agents managing high-volume content:
+
+```python
+# 1. Create multiple posts
+post_ids = []
+for content in articles:
+    resp = requests.post(
+        f"{BASE}/websites/{website_id}/posts",
+        headers=HEADERS,
+        json={"content": content},
+    )
+    post_ids.append(resp.json()["post"]["id"])
+
+# 2. Bulk approve
+requests.patch(
+    f"{BASE}/websites/{website_id}/posts/bulk_approve",
+    headers=HEADERS,
+    json={"post_ids": post_ids},
+)
+
+# 3. Send all
+requests.post(
+    f"{BASE}/websites/{website_id}/posts/send_now",
+    headers=HEADERS,
+    json={"post_ids": post_ids},
+)
+```
+
+### Workflow 3: Token Refresh
+
+When OAuth tokens expire, posts fail to publish. Agents should handle this:
+
+```python
+# If publishing fails, try refreshing the OAuth token
+requests.patch(
+    f"{BASE}/share_accounts/{account_id}/x_oauth_refresh",
+    headers=HEADERS,
+)
+# Then retry the send
+```
+
+## Error Handling Strategy
+
+Agents should implement robust error handling:
+
+1. **401** → API key is invalid. Stop and request a new key.
+2. **403 (endpoint)** → Wrong endpoint. Check the API reference.
+3. **403 (resource)** → Wrong resource ID. Verify ownership.
+4. **422** → Validation error. Fix the request parameters and retry.
+5. **5xx** → Server error. Retry with exponential backoff.
+
+```python
+import time
+
+def api_call(method, url, max_retries=3, **kwargs):
+    for attempt in range(max_retries):
+        response = requests.request(method, url, **kwargs)
+
+        if response.status_code == 401:
+            raise Exception("API key invalid — provide a new key")
+        elif response.status_code in (403, 422):
+            return response  # Client error, don't retry
+        elif response.status_code >= 500:
+            wait = 2 ** attempt
+            time.sleep(wait)
+            continue
+        else:
+            return response
+
+    return response  # Return last response after retries exhausted
+```
+
+## Idempotency
+
+- **Approve** is idempotent — approving an already-approved post is safe
+- **Reject** is idempotent — rejecting an already-rejected post is safe
+- **Send** is NOT idempotent — attempting to send an already-sent post returns 422
+- **Delete** is idempotent — deleting a non-existent resource returns 404
+
+## Rate Limiting
+
+See [Rate Limits](/docs/guides/rate-limits/) for current guidelines. Agents should:
+- Space requests at least 1 second apart
+- Use bulk endpoints instead of individual calls
+- Implement backoff on repeated failures
+
+## Security Considerations
+
+- **Never hardcode API keys** in agent source code
+- **Use least-privilege keys** — create separate keys per agent with expiry dates
+- **Revoke keys** when an agent is decommissioned
+- **Audit usage** via the `last_used_at` field in the API key list
+- **API keys can't create other keys** — a compromised key cannot escalate privileges

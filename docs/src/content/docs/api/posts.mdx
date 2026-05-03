@@ -1,0 +1,784 @@
+---
+title: Posts
+description: API reference for creating, updating, approving, rejecting, and sending social media posts.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Posts are the core content object in Poaster. Each post contains text (or a thread of text parts) and moves through statuses: `pending` → `approved` → `sent`. The API gives you full control over this lifecycle.
+
+## Post Statuses
+
+| Status | Description |
+|--------|-------------|
+| `pending` | Newly created, awaiting review |
+| `approved` | Approved and queued for publishing |
+| `rejected` | Rejected, will not be published |
+| `sent` | Successfully published to social media |
+
+---
+
+## Create a Post
+
+```http
+POST /websites/:website_id/posts
+```
+
+Creates a new post. If the website has `auto_approve_posts` enabled, the post is automatically approved.
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `website_id` | integer | Yes | The website ID (in the URL path) |
+| `content` | string | Yes | The post text. Wrapped in an array internally to support threads |
+| `url` | string | No | Source URL for the post. Defaults to the website's `base_url` |
+
+### Code Examples
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X POST https://my.poaster.app/websites/1/posts \
+  -H "Authorization: Bearer po_live_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "Just shipped a new feature that makes AI agents 10x more useful. Thread below 🧵"
+  }'
+```
+
+</TabItem>
+<TabItem label="Python">
+
+```python
+import requests
+
+response = requests.post(
+    "https://my.poaster.app/websites/1/posts",
+    headers={
+        "Authorization": "Bearer po_live_your_api_key",
+        "Content-Type": "application/json",
+    },
+    json={
+        "content": "Just shipped a new feature that makes AI agents 10x more useful. Thread below 🧵"
+    },
+)
+print(response.json())
+```
+
+</TabItem>
+<TabItem label="Ruby">
+
+```ruby
+require 'net/http'
+require 'json'
+
+uri = URI('https://my.poaster.app/websites/1/posts')
+request = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
+request['Authorization'] = 'Bearer po_live_your_api_key'
+request.body = {
+  content: 'Just shipped a new feature that makes AI agents 10x more useful. Thread below 🧵'
+}.to_json
+
+response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(request)
+end
+puts response.body
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch("https://my.poaster.app/websites/1/posts", {
+  method: "POST",
+  headers: {
+    Authorization: "Bearer po_live_your_api_key",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    content:
+      "Just shipped a new feature that makes AI agents 10x more useful. Thread below 🧵",
+  }),
+});
+const data = await response.json();
+console.log(data);
+```
+
+</TabItem>
+</Tabs>
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Post created successfully!"
+}
+```
+
+### Errors
+
+| Status | Cause |
+|--------|-------|
+| `401` | Invalid or missing API key |
+| `403` | Website belongs to another user |
+| `422` | Content is blank |
+
+---
+
+## Update a Post
+
+```http
+PATCH /websites/:website_id/posts/:id
+```
+
+Updates the content of a post. **Cannot update posts that have already been sent.**
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `website_id` | integer | Yes | The website ID (in the URL path) |
+| `id` | integer | Yes | The post ID (in the URL path) |
+| `content` | string or array | Yes | New post content. String or array of strings for threads |
+
+### Code Examples
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X PATCH https://my.poaster.app/websites/1/posts/42 \
+  -H "Authorization: Bearer po_live_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": ["Updated first tweet", "Updated second tweet in thread"]
+  }'
+```
+
+</TabItem>
+<TabItem label="Python">
+
+```python
+import requests
+
+response = requests.patch(
+    "https://my.poaster.app/websites/1/posts/42",
+    headers={
+        "Authorization": "Bearer po_live_your_api_key",
+        "Content-Type": "application/json",
+    },
+    json={
+        "content": ["Updated first tweet", "Updated second tweet in thread"]
+    },
+)
+print(response.json())
+```
+
+</TabItem>
+<TabItem label="Ruby">
+
+```ruby
+require 'net/http'
+require 'json'
+
+uri = URI('https://my.poaster.app/websites/1/posts/42')
+request = Net::HTTP::Patch.new(uri, 'Content-Type' => 'application/json')
+request['Authorization'] = 'Bearer po_live_your_api_key'
+request.body = {
+  content: ['Updated first tweet', 'Updated second tweet in thread']
+}.to_json
+
+response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(request)
+end
+puts response.body
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch("https://my.poaster.app/websites/1/posts/42", {
+  method: "PATCH",
+  headers: {
+    Authorization: "Bearer po_live_your_api_key",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    content: ["Updated first tweet", "Updated second tweet in thread"],
+  }),
+});
+const data = await response.json();
+console.log(data);
+```
+
+</TabItem>
+</Tabs>
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Post updated successfully.",
+  "post": {
+    "id": 42,
+    "content": ["Updated first tweet", "Updated second tweet in thread"],
+    "status": "pending"
+  }
+}
+```
+
+### Errors
+
+| Status | Cause |
+|--------|-------|
+| `401` | Invalid or missing API key |
+| `403` | Post belongs to another user's website |
+| `422` | Post already sent, or content is empty |
+
+---
+
+## Approve a Post
+
+```http
+PATCH /websites/:website_id/posts/:id/approve
+```
+
+Approves a pending or rejected post, moving it to `approved` status.
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `website_id` | integer | Yes | The website ID (in the URL path) |
+| `id` | integer | Yes | The post ID (in the URL path) |
+
+### Code Examples
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X PATCH https://my.poaster.app/websites/1/posts/42/approve \
+  -H "Authorization: Bearer po_live_your_api_key"
+```
+
+</TabItem>
+<TabItem label="Python">
+
+```python
+import requests
+
+response = requests.patch(
+    "https://my.poaster.app/websites/1/posts/42/approve",
+    headers={"Authorization": "Bearer po_live_your_api_key"},
+)
+print(response.json())
+```
+
+</TabItem>
+<TabItem label="Ruby">
+
+```ruby
+require 'net/http'
+
+uri = URI('https://my.poaster.app/websites/1/posts/42/approve')
+request = Net::HTTP::Patch.new(uri)
+request['Authorization'] = 'Bearer po_live_your_api_key'
+
+response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(request)
+end
+puts response.body
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch(
+  "https://my.poaster.app/websites/1/posts/42/approve",
+  {
+    method: "PATCH",
+    headers: { Authorization: "Bearer po_live_your_api_key" },
+  }
+);
+const data = await response.json();
+console.log(data);
+```
+
+</TabItem>
+</Tabs>
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Post approved successfully.",
+  "post": {
+    "id": 42,
+    "status": "approved"
+  },
+  "counts": {
+    "pending": 5,
+    "approved": 12,
+    "rejected": 2,
+    "sent": 30
+  }
+}
+```
+
+---
+
+## Reject a Post
+
+```http
+PATCH /websites/:website_id/posts/:id/reject
+```
+
+Rejects a post. It will not be published.
+
+### Parameters
+
+Same as [Approve](#approve-a-post).
+
+### Code Examples
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X PATCH https://my.poaster.app/websites/1/posts/42/reject \
+  -H "Authorization: Bearer po_live_your_api_key"
+```
+
+</TabItem>
+<TabItem label="Python">
+
+```python
+import requests
+
+response = requests.patch(
+    "https://my.poaster.app/websites/1/posts/42/reject",
+    headers={"Authorization": "Bearer po_live_your_api_key"},
+)
+print(response.json())
+```
+
+</TabItem>
+<TabItem label="Ruby">
+
+```ruby
+require 'net/http'
+
+uri = URI('https://my.poaster.app/websites/1/posts/42/reject')
+request = Net::HTTP::Patch.new(uri)
+request['Authorization'] = 'Bearer po_live_your_api_key'
+
+response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(request)
+end
+puts response.body
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch(
+  "https://my.poaster.app/websites/1/posts/42/reject",
+  {
+    method: "PATCH",
+    headers: { Authorization: "Bearer po_live_your_api_key" },
+  }
+);
+const data = await response.json();
+console.log(data);
+```
+
+</TabItem>
+</Tabs>
+
+### Response
+
+Same format as [Approve](#approve-a-post), with `status: "rejected"`.
+
+---
+
+## Re-enqueue a Post
+
+```http
+PATCH /websites/:website_id/posts/:id/re_enqueue
+```
+
+Moves a post back to `approved` status and clears its `sent_at` timestamp and `x_tweet_id`. Useful for re-publishing a post.
+
+### Parameters
+
+Same as [Approve](#approve-a-post).
+
+### Code Examples
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X PATCH https://my.poaster.app/websites/1/posts/42/re_enqueue \
+  -H "Authorization: Bearer po_live_your_api_key"
+```
+
+</TabItem>
+<TabItem label="Python">
+
+```python
+import requests
+
+response = requests.patch(
+    "https://my.poaster.app/websites/1/posts/42/re_enqueue",
+    headers={"Authorization": "Bearer po_live_your_api_key"},
+)
+print(response.json())
+```
+
+</TabItem>
+<TabItem label="Ruby">
+
+```ruby
+require 'net/http'
+
+uri = URI('https://my.poaster.app/websites/1/posts/42/re_enqueue')
+request = Net::HTTP::Patch.new(uri)
+request['Authorization'] = 'Bearer po_live_your_api_key'
+
+response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(request)
+end
+puts response.body
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch(
+  "https://my.poaster.app/websites/1/posts/42/re_enqueue",
+  {
+    method: "PATCH",
+    headers: { Authorization: "Bearer po_live_your_api_key" },
+  }
+);
+const data = await response.json();
+console.log(data);
+```
+
+</TabItem>
+</Tabs>
+
+---
+
+## Send a Post Now
+
+```http
+PATCH /websites/:website_id/posts/:id/send_now_individual
+```
+
+Immediately sends an approved post to all connected share accounts. The post must not have already been sent. The website must have at least one share account connected.
+
+### Parameters
+
+Same as [Approve](#approve-a-post).
+
+### Code Examples
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X PATCH https://my.poaster.app/websites/1/posts/42/send_now_individual \
+  -H "Authorization: Bearer po_live_your_api_key"
+```
+
+</TabItem>
+<TabItem label="Python">
+
+```python
+import requests
+
+response = requests.patch(
+    "https://my.poaster.app/websites/1/posts/42/send_now_individual",
+    headers={"Authorization": "Bearer po_live_your_api_key"},
+)
+print(response.json())
+```
+
+</TabItem>
+<TabItem label="Ruby">
+
+```ruby
+require 'net/http'
+
+uri = URI('https://my.poaster.app/websites/1/posts/42/send_now_individual')
+request = Net::HTTP::Patch.new(uri)
+request['Authorization'] = 'Bearer po_live_your_api_key'
+
+response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(request)
+end
+puts response.body
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch(
+  "https://my.poaster.app/websites/1/posts/42/send_now_individual",
+  {
+    method: "PATCH",
+    headers: { Authorization: "Bearer po_live_your_api_key" },
+  }
+);
+const data = await response.json();
+console.log(data);
+```
+
+</TabItem>
+</Tabs>
+
+### Errors
+
+| Status | Cause |
+|--------|-------|
+| `401` | Invalid or missing API key |
+| `422` | Post already sent |
+| `422` | No share accounts connected to the website |
+
+---
+
+## Send Multiple Posts Now
+
+```http
+POST /websites/:website_id/posts/send_now
+```
+
+Sends multiple approved posts immediately. Same constraints as individual send.
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `website_id` | integer | Yes | The website ID (in the URL path) |
+| `post_ids` | array | Yes | Array of post IDs to send |
+
+### Code Examples
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X POST https://my.poaster.app/websites/1/posts/send_now \
+  -H "Authorization: Bearer po_live_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "post_ids": [42, 43, 44]
+  }'
+```
+
+</TabItem>
+<TabItem label="Python">
+
+```python
+import requests
+
+response = requests.post(
+    "https://my.poaster.app/websites/1/posts/send_now",
+    headers={
+        "Authorization": "Bearer po_live_your_api_key",
+        "Content-Type": "application/json",
+    },
+    json={"post_ids": [42, 43, 44]},
+)
+print(response.json())
+```
+
+</TabItem>
+<TabItem label="Ruby">
+
+```ruby
+require 'net/http'
+require 'json'
+
+uri = URI('https://my.poaster.app/websites/1/posts/send_now')
+request = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
+request['Authorization'] = 'Bearer po_live_your_api_key'
+request.body = { post_ids: [42, 43, 44] }.to_json
+
+response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(request)
+end
+puts response.body
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch(
+  "https://my.poaster.app/websites/1/posts/send_now",
+  {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer po_live_your_api_key",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ post_ids: [42, 43, 44] }),
+  }
+);
+const data = await response.json();
+console.log(data);
+```
+
+</TabItem>
+</Tabs>
+
+---
+
+## Send Posts Now and Return
+
+```http
+POST /websites/:website_id/posts/send_now_and_return
+```
+
+Same as `send_now` but returns to the compose page in the browser UI. Identical behavior for API requests.
+
+### Parameters
+
+Same as [Send Multiple Posts Now](#send-multiple-posts-now).
+
+---
+
+## Bulk Approve
+
+```http
+PATCH /websites/:website_id/posts/bulk_approve
+```
+
+Approves multiple posts at once.
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `website_id` | integer | Yes | The website ID (in the URL path) |
+| `post_ids` | array | Yes | Array of post IDs to approve |
+
+### Code Examples
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X PATCH https://my.poaster.app/websites/1/posts/bulk_approve \
+  -H "Authorization: Bearer po_live_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "post_ids": [42, 43, 44]
+  }'
+```
+
+</TabItem>
+<TabItem label="Python">
+
+```python
+import requests
+
+response = requests.patch(
+    "https://my.poaster.app/websites/1/posts/bulk_approve",
+    headers={
+        "Authorization": "Bearer po_live_your_api_key",
+        "Content-Type": "application/json",
+    },
+    json={"post_ids": [42, 43, 44]},
+)
+print(response.json())
+```
+
+</TabItem>
+<TabItem label="Ruby">
+
+```ruby
+require 'net/http'
+require 'json'
+
+uri = URI('https://my.poaster.app/websites/1/posts/bulk_approve')
+request = Net::HTTP::Patch.new(uri, 'Content-Type' => 'application/json')
+request['Authorization'] = 'Bearer po_live_your_api_key'
+request.body = { post_ids: [42, 43, 44] }.to_json
+
+response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(request)
+end
+puts response.body
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch(
+  "https://my.poaster.app/websites/1/posts/bulk_approve",
+  {
+    method: "PATCH",
+    headers: {
+      Authorization: "Bearer po_live_your_api_key",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ post_ids: [42, 43, 44] }),
+  }
+);
+const data = await response.json();
+console.log(data);
+```
+
+</TabItem>
+</Tabs>
+
+---
+
+## Bulk Reject
+
+```http
+PATCH /websites/:website_id/posts/bulk_reject
+```
+
+Rejects multiple posts at once. Same parameters and format as [Bulk Approve](#bulk-approve).
+
+---
+
+## Bulk Re-enqueue
+
+```http
+PATCH /websites/:website_id/posts/bulk_re_enqueue
+```
+
+Moves multiple posts back to `approved` status. Same parameters and format as [Bulk Approve](#bulk-approve).
+
+---
+
+## Post Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Unique identifier |
+| `content` | array | JSON array of strings (supports multi-part threads) |
+| `status` | string | `pending`, `approved`, `rejected`, or `sent` |
+| `post_type` | integer | Post type (default: 0) |
+| `sent_at` | datetime | When the post was sent (null if unsent) |
+| `x_tweet_id` | string | X/Twitter tweet ID after publishing |
+| `webpage_id` | integer | Parent webpage ID |
+| `created_at` | datetime | ISO 8601 timestamp |

@@ -1,0 +1,57 @@
+---
+title: Rate Limits
+description: Understanding rate limits and best practices for the Poaster API.
+---
+
+## Current Limits
+
+Poaster does not enforce explicit rate limits on API requests at this time. However, we ask that you follow these guidelines to ensure fair usage and platform stability.
+
+## Recommended Limits
+
+| Action | Recommended Rate |
+|--------|-----------------|
+| Read requests (GET) | Up to 60 per minute |
+| Write requests (POST/PATCH/DELETE) | Up to 30 per minute |
+| Bulk operations | Up to 10 per minute |
+| Send operations | Up to 5 per minute |
+
+## Best Practices
+
+### Use Appropriate Intervals
+
+Space your requests at least 1 second apart for write operations. For bulk operations, wait 5 seconds between batches.
+
+### Implement Exponential Backoff
+
+If you receive `429` or `5xx` errors, implement exponential backoff:
+
+```python
+import time
+import requests
+
+def api_call_with_retry(url, method="GET", max_retries=3, **kwargs):
+    for attempt in range(max_retries):
+        response = requests.request(method, url, **kwargs)
+        if response.status_code == 429:
+            wait = 2 ** attempt
+            time.sleep(wait)
+            continue
+        return response
+    return response
+```
+
+### Cache Responses
+
+For workflows that poll for status changes, cache responses and only re-fetch when you expect a change (e.g., after triggering a job).
+
+### Batch Operations
+
+Use [bulk endpoints](/docs/guides/bulk-operations/) instead of making individual requests for each post. One `bulk_approve` call is better than 50 individual `approve` calls.
+
+## Future Changes
+
+Rate limits may be introduced as the platform scales. If limits are added, they will be communicated via:
+- Response headers (`X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`)
+- This documentation page
+- The [Poaster changelog](https://poaster.userjot.com/updates)

@@ -1,0 +1,206 @@
+---
+title: Webpages
+description: API reference for submitting content pages for AI processing.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Webpages represent individual articles or URLs submitted to Poaster for AI processing. When you create a webpage, Poaster's AI analyzes the content and generates social media posts from it.
+
+## Create a Webpage
+
+```http
+POST /websites/:website_id/webpages
+```
+
+Submits a URL for AI processing. Poaster fetches the page, extracts key content, and generates post suggestions. If the URL already exists as a webpage under this website, the request is rejected.
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `website_id` | integer | Yes | The website ID (in the URL path) |
+| `url` | string | Yes | The URL of the page to process |
+| `content` | string | No | Raw HTML or text content. If provided, Poaster uses this instead of fetching the URL |
+
+### Code Examples
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X POST https://my.poaster.app/websites/1/webpages \
+  -H "Authorization: Bearer po_live_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://myblog.substack.com/p/my-latest-article"
+  }'
+```
+
+</TabItem>
+<TabItem label="Python">
+
+```python
+import requests
+
+response = requests.post(
+    "https://my.poaster.app/websites/1/webpages",
+    headers={
+        "Authorization": "Bearer po_live_your_api_key",
+        "Content-Type": "application/json",
+    },
+    json={
+        "url": "https://myblog.substack.com/p/my-latest-article"
+    },
+)
+print(response.status_code)
+print(response.json())
+```
+
+</TabItem>
+<TabItem label="Ruby">
+
+```ruby
+require 'net/http'
+require 'json'
+
+uri = URI('https://my.poaster.app/websites/1/webpages')
+request = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
+request['Authorization'] = 'Bearer po_live_your_api_key'
+request.body = {
+  url: 'https://myblog.substack.com/p/my-latest-article'
+}.to_json
+
+response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(request)
+end
+puts response.code
+puts response.body
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch("https://my.poaster.app/websites/1/webpages", {
+  method: "POST",
+  headers: {
+    Authorization: "Bearer po_live_your_api_key",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    url: "https://myblog.substack.com/p/my-latest-article",
+  }),
+});
+console.log(response.status);
+const data = await response.json();
+console.log(data);
+```
+
+</TabItem>
+</Tabs>
+
+### Submitting Content Directly
+
+If you already have the article content and want to skip the URL fetch, pass the `content` parameter:
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X POST https://my.poaster.app/websites/1/webpages \
+  -H "Authorization: Bearer po_live_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://example.com/custom-article",
+    "content": "<p>Your article HTML or plain text content here...</p>"
+  }'
+```
+
+</TabItem>
+<TabItem label="Python">
+
+```python
+import requests
+
+response = requests.post(
+    "https://my.poaster.app/websites/1/webpages",
+    headers={
+        "Authorization": "Bearer po_live_your_api_key",
+        "Content-Type": "application/json",
+    },
+    json={
+        "url": "https://example.com/custom-article",
+        "content": "<p>Your article HTML or plain text content here...</p>",
+    },
+)
+print(response.json())
+```
+
+</TabItem>
+<TabItem label="Ruby">
+
+```ruby
+require 'net/http'
+require 'json'
+
+uri = URI('https://my.poaster.app/websites/1/webpages')
+request = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
+request['Authorization'] = 'Bearer po_live_your_api_key'
+request.body = {
+  url: 'https://example.com/custom-article',
+  content: '<p>Your article HTML or plain text content here...</p>'
+}.to_json
+
+response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(request)
+end
+puts response.body
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch("https://my.poaster.app/websites/1/webpages", {
+  method: "POST",
+  headers: {
+    Authorization: "Bearer po_live_your_api_key",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    url: "https://example.com/custom-article",
+    content: "<p>Your article HTML or plain text content here...</p>",
+  }),
+});
+const data = await response.json();
+console.log(data);
+```
+
+</TabItem>
+</Tabs>
+
+### Response
+
+The webpage is created with status `queued` and `WebpageProcessJob` is enqueued. Check back later or poll the website to see generated posts.
+
+### Errors
+
+| Status | Cause |
+|--------|-------|
+| `401` | Invalid or missing API key |
+| `403` | Website belongs to another user |
+| `404` | Website not found |
+| `422` | URL is blank or webpage already exists for this URL |
+
+---
+
+## Webpage Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Unique identifier |
+| `source_url` | string | The original URL |
+| `status` | string | `queued`, `in_progress`, `done`, or `failed` |
+| `website_id` | integer | Parent website ID |
+| `created_at` | datetime | ISO 8601 timestamp |

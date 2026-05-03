@@ -1,0 +1,82 @@
+# Poaster API
+
+> AI-powered social media automation for writers
+
+## Base URL
+
+https://my.poaster.app
+
+## Authentication
+
+All requests require a Bearer token in the Authorization header.
+
+```
+Authorization: Bearer po_live_xxxxxxxxxxxxxxxx
+```
+
+API keys are created in Settings at https://my.poaster.app/settings. Keys start with `po_live_` and use SHA256 digest storage.
+
+Only endpoints with `allow_api_key_access` accept API keys. Other endpoints return 403.
+
+## Endpoints
+
+### Websites
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | /websites | Create a website. Params: website[base_url], website[website_type] (generic|substack) |
+| PATCH | /websites/:id/retry | Re-queue website for AI evaluation |
+| DELETE | /websites/:id | Delete a website permanently |
+
+### Webpages
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | /websites/:website_id/webpages | Submit a URL for AI processing. Params: url (required), content (optional) |
+
+### Posts
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | /websites/:website_id/posts | Create a post. Params: content (required), url (optional) |
+| PATCH | /websites/:website_id/posts/:id | Update post content. Params: content (string or array). Cannot update sent posts |
+| PATCH | /websites/:website_id/posts/:id/approve | Approve a post (pending/rejected -> approved) |
+| PATCH | /websites/:website_id/posts/:id/reject | Reject a post |
+| PATCH | /websites/:website_id/posts/:id/re_enqueue | Re-enqueue a post (-> approved, clears sent_at) |
+| PATCH | /websites/:website_id/posts/:id/send_now_individual | Send post immediately. Requires share accounts |
+| POST | /websites/:website_id/posts/send_now | Send multiple posts. Params: post_ids (array) |
+| POST | /websites/:website_id/posts/send_now_and_return | Same as send_now for API requests |
+| PATCH | /websites/:website_id/posts/bulk_approve | Bulk approve. Params: post_ids (array) |
+| PATCH | /websites/:website_id/posts/bulk_reject | Bulk reject. Params: post_ids (array) |
+| PATCH | /websites/:website_id/posts/bulk_re_enqueue | Bulk re-enqueue. Params: post_ids (array) |
+
+### Share Accounts
+
+| Method | Path | Description |
+|--------|------|-------------|
+| DELETE | /share_accounts/:id | Delete a share account |
+| PATCH | /share_accounts/:id/x_oauth_refresh | Refresh X (Twitter) OAuth2 token |
+| PATCH | /share_accounts/:id/linkedin_oauth_refresh | Refresh LinkedIn OAuth2 token |
+
+## Post Statuses
+
+pending (0) -> approved (1) -> sent (3). Rejected (2) is a terminal state unless re-approved.
+
+## Website Statuses
+
+queued (0) -> in_progress (1) -> done (2). failed (3) can be retried.
+
+## Service Types
+
+x (1), linkedin (3), hypefury_v1 (0)
+
+## Error Codes
+
+- 401: Unauthorized - Invalid or missing API key
+- 403: Forbidden - Endpoint does not accept API keys, or resource belongs to another user
+- 404: Not Found
+- 422: Unprocessable Entity - Validation error
+
+## Full Documentation
+
+https://poaster.app/docs/

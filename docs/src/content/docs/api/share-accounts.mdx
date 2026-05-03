@@ -1,0 +1,278 @@
+---
+title: Share Accounts
+description: API reference for managing social media connections (share accounts).
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Share accounts represent connected social media profiles. They're the publishing destinations for your posts. Currently supported: X (Twitter) and LinkedIn.
+
+## Delete a Share Account
+
+```http
+DELETE /share_accounts/:id
+```
+
+Permanently deletes a share account. The account is disassociated from all websites and its OAuth tokens are removed. This action is irreversible.
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `id` | integer | Yes | The share account ID (in the URL path) |
+
+### Code Examples
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X DELETE https://my.poaster.app/share_accounts/5 \
+  -H "Authorization: Bearer po_live_your_api_key"
+```
+
+</TabItem>
+<TabItem label="Python">
+
+```python
+import requests
+
+response = requests.delete(
+    "https://my.poaster.app/share_accounts/5",
+    headers={"Authorization": "Bearer po_live_your_api_key"},
+)
+print(response.status_code)
+```
+
+</TabItem>
+<TabItem label="Ruby">
+
+```ruby
+require 'net/http'
+
+uri = URI('https://my.poaster.app/share_accounts/5')
+request = Net::HTTP::Delete.new(uri)
+request['Authorization'] = 'Bearer po_live_your_api_key'
+
+response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(request)
+end
+puts response.code
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch("https://my.poaster.app/share_accounts/5", {
+  method: "DELETE",
+  headers: { Authorization: "Bearer po_live_your_api_key" },
+});
+console.log(response.status);
+```
+
+</TabItem>
+</Tabs>
+
+### Errors
+
+| Status | Cause |
+|--------|-------|
+| `401` | Invalid or missing API key |
+| `403` | Share account belongs to another user |
+| `404` | Share account not found |
+
+---
+
+## Refresh X OAuth Token
+
+```http
+PATCH /share_accounts/:id/x_oauth_refresh
+```
+
+Refreshes the OAuth2 access token for an X (Twitter) share account. Use this when the token has expired and posts are failing to publish.
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `id` | integer | Yes | The share account ID (in the URL path). Must be an X account |
+
+### Code Examples
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X PATCH https://my.poaster.app/share_accounts/5/x_oauth_refresh \
+  -H "Authorization: Bearer po_live_your_api_key"
+```
+
+</TabItem>
+<TabItem label="Python">
+
+```python
+import requests
+
+response = requests.patch(
+    "https://my.poaster.app/share_accounts/5/x_oauth_refresh",
+    headers={"Authorization": "Bearer po_live_your_api_key"},
+)
+print(response.status_code)
+```
+
+</TabItem>
+<TabItem label="Ruby">
+
+```ruby
+require 'net/http'
+
+uri = URI('https://my.poaster.app/share_accounts/5/x_oauth_refresh')
+request = Net::HTTP::Patch.new(uri)
+request['Authorization'] = 'Bearer po_live_your_api_key'
+
+response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(request)
+end
+puts response.code
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch(
+  "https://my.poaster.app/share_accounts/5/x_oauth_refresh",
+  {
+    method: "PATCH",
+    headers: { Authorization: "Bearer po_live_your_api_key" },
+  }
+);
+console.log(response.status);
+```
+
+</TabItem>
+</Tabs>
+
+### Errors
+
+| Status | Cause |
+|--------|-------|
+| `401` | Invalid or missing API key |
+| `403` | Share account belongs to another user, or account is not an X account |
+| `404` | Share account not found |
+
+---
+
+## Refresh LinkedIn OAuth Token
+
+```http
+PATCH /share_accounts/:id/linkedin_oauth_refresh
+```
+
+Refreshes the OAuth2 access token for a LinkedIn share account. Use this when the token has expired and posts are failing to publish.
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `id` | integer | Yes | The share account ID (in the URL path). Must be a LinkedIn account |
+
+### Code Examples
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X PATCH https://my.poaster.app/share_accounts/7/linkedin_oauth_refresh \
+  -H "Authorization: Bearer po_live_your_api_key"
+```
+
+</TabItem>
+<TabItem label="Python">
+
+```python
+import requests
+
+response = requests.patch(
+    "https://my.poaster.app/share_accounts/7/linkedin_oauth_refresh",
+    headers={"Authorization": "Bearer po_live_your_api_key"},
+)
+print(response.status_code)
+```
+
+</TabItem>
+<TabItem label="Ruby">
+
+```ruby
+require 'net/http'
+
+uri = URI('https://my.poaster.app/share_accounts/7/linkedin_oauth_refresh')
+request = Net::HTTP::Patch.new(uri)
+request['Authorization'] = 'Bearer po_live_your_api_key'
+
+response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(request)
+end
+puts response.code
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch(
+  "https://my.poaster.app/share_accounts/7/linkedin_oauth_refresh",
+  {
+    method: "PATCH",
+    headers: { Authorization: "Bearer po_live_your_api_key" },
+  }
+);
+console.log(response.status);
+```
+
+</TabItem>
+</Tabs>
+
+### Errors
+
+| Status | Cause |
+|--------|-------|
+| `401` | Invalid or missing API key |
+| `403` | Share account belongs to another user, or account is not a LinkedIn account |
+| `404` | Share account not found |
+
+---
+
+## Share Account Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Unique identifier |
+| `service_type` | string | `x`, `linkedin`, or `hypefury_v1` |
+| `schedule_type` | string | `send_immediately`, `once_daily`, or `custom` |
+| `username` | string | Cached username for the social account |
+| `auto_retweet_enabled` | boolean | Whether auto-retweet is enabled |
+| `last_sent_at` | datetime | When the account last published a post |
+| `user_id` | integer | Owner user ID |
+| `created_at` | datetime | ISO 8601 timestamp |
+
+### Service Types
+
+| Type | Description |
+|------|-------------|
+| `x` | Direct X (Twitter) API posting via OAuth2 |
+| `linkedin` | LinkedIn API posting via OAuth2 |
+| `hypefury_v1` | Hypefury cross-posting integration |
+
+### Schedule Types
+
+| Type | Description |
+|------|-------------|
+| `send_immediately` | Posts are published as soon as they're approved |
+| `once_daily` | Posts are batched and published once per day |
+| `custom` | Custom schedule defined in `schedule_data` |
+
+:::note
+Creating share accounts requires browser-based OAuth flows. The API only supports deleting accounts and refreshing OAuth tokens.
+:::

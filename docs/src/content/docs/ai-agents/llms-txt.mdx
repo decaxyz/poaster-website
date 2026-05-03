@@ -1,0 +1,81 @@
+---
+title: LLMs.txt
+description: Machine-readable API documentation for AI agents at /docs/llms.txt.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Poaster provides a `llms.txt` file for AI agents and LLMs to discover and understand the API programmatically.
+
+## What is llms.txt?
+
+[llms.txt](https://llmstxt.org/) is a convention for providing machine-readable documentation that AI agents can fetch and use to understand an API without scraping HTML pages. It's served as plain text at a well-known URL.
+
+## Poaster's llms.txt
+
+Our llms.txt is available at:
+
+```
+https://poaster.app/docs/llms.txt
+```
+
+It contains:
+
+- A brief description of Poaster and the API
+- The base URL and authentication method
+- A summary of all available endpoints with HTTP methods, paths, and descriptions
+- Common request/response patterns
+- Error codes
+
+## How AI Agents Can Use It
+
+1. **Fetch** `https://poaster.app/docs/llms.txt`
+2. **Parse** the endpoint descriptions
+3. **Construct** API calls based on the documented parameters
+4. **Handle** errors according to the documented error codes
+
+## Example: Fetching llms.txt
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl https://poaster.app/docs/llms.txt
+```
+
+</TabItem>
+<TabItem label="Python">
+
+```python
+import requests
+
+response = requests.get("https://poaster.app/docs/llms.txt")
+print(response.text)
+```
+
+</TabItem>
+<TabItem label="Ruby">
+
+```ruby
+require 'net/http'
+
+uri = URI('https://poaster.app/docs/llms.txt')
+response = Net::HTTP.get(uri)
+puts response
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch("https://poaster.app/docs/llms.txt");
+const text = await response.text();
+console.log(text);
+```
+
+</TabItem>
+</Tabs>
+
+## For More Details
+
+The llms.txt provides a compact summary. For complete parameter details, code examples, and response formats, refer to the full [API Reference](/docs/api/websites/) pages.

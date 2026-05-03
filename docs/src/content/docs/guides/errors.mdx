@@ -1,0 +1,105 @@
+---
+title: Errors
+description: Error codes, response formats, and troubleshooting for the Poaster API.
+---
+
+## Error Response Format
+
+All errors return JSON with an `error` key:
+
+```json
+{
+  "error": "Description of what went wrong"
+}
+```
+
+Some endpoints return additional context:
+
+```json
+{
+  "success": false,
+  "message": "Post content cannot be empty"
+}
+```
+
+## HTTP Status Codes
+
+| Status | Meaning | When |
+|--------|---------|------|
+| `401` | Unauthorized | Invalid, missing, expired, or revoked API key |
+| `403` | Forbidden | Endpoint doesn't accept API keys, or resource belongs to another user |
+| `404` | Not Found | Resource doesn't exist |
+| `422` | Unprocessable Entity | Validation error (missing params, invalid data) |
+| `500` | Internal Server Error | Something went wrong on our end |
+
+## Common Errors
+
+### 401 Unauthorized
+
+```json
+{
+  "error": "Unauthorized. Invalid or missing API key."
+}
+```
+
+**Causes:**
+- Missing `Authorization` header
+- Malformed Bearer token
+- API key has been revoked
+- API key has expired
+
+**Solution:** Verify your API key is correct and still active in Settings → API Keys.
+
+### 403 Forbidden (Endpoint)
+
+```json
+{
+  "error": "Forbidden. This endpoint does not accept API key authentication."
+}
+```
+
+**Cause:** You're trying to access an endpoint that only works with browser (cookie) sessions. The API uses an opt-in model — only specific endpoints accept API keys.
+
+**Solution:** Check the [API Reference](/docs/api/websites/) for which endpoints accept API keys.
+
+### 403 Forbidden (Resource)
+
+```json
+{
+  "error": "Forbidden"
+}
+```
+
+**Cause:** The resource belongs to another user. API keys are scoped to the user who created them.
+
+**Solution:** Verify the resource ID belongs to your account.
+
+### 422 Unprocessable Entity
+
+```json
+{
+  "success": false,
+  "message": "Post content is required"
+}
+```
+
+**Common causes:**
+- Missing required parameters
+- Empty content fields
+- Attempting to update a sent post
+
+**Solution:** Check the endpoint's parameter table and ensure all required fields are provided.
+
+## Troubleshooting
+
+### "Cannot edit posts that have already been sent"
+
+Posts with `status: "sent"` cannot be updated. Use `re_enqueue` to move the post back to `approved` status, then update it.
+
+### "No share accounts connected to this website"
+
+Posts can only be sent if the website has at least one share account (X or LinkedIn). Connect a share account in the Poaster UI first.
+
+### "Post already sent"
+
+The `send_now_individual` endpoint rejects posts that have already been sent. Each post can only be sent once. Use `re_enqueue` first if you need to re-send.
