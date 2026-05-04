@@ -16,22 +16,7 @@ export default defineConfig({
         src: './src/assets/poaster.svg',
         replacesTitle: true,
       },
-      head: [
-        {
-          tag: 'link',
-          attrs: {
-            rel: 'preconnect',
-            href: 'https://api.fontshare.com',
-          },
-        },
-        {
-          tag: 'link',
-          attrs: {
-            rel: 'stylesheet',
-            href: 'https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700&display=swap',
-          },
-        },
-      ],
+      head: [],
       customCss: ['./src/styles/custom.css'],
       social: [
         {
