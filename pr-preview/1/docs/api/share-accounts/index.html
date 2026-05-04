@@ -271,35 +271,12 @@
 
 
 
-
-
-
-
-
-<table><thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code dir="auto">id</code></td><td>integer</td><td>Unique identifier</td></tr><tr><td><code dir="auto">service_type</code></td><td>string</td><td><code dir="auto">x</code>, <code dir="auto">linkedin</code>, or <code dir="auto">hypefury_v1</code></td></tr><tr><td><code dir="auto">schedule_type</code></td><td>string</td><td><code dir="auto">send_immediately</code>, <code dir="auto">once_daily</code>, or <code dir="auto">custom</code></td></tr><tr><td><code dir="auto">username</code></td><td>string</td><td>Cached username for the social account</td></tr><tr><td><code dir="auto">auto_retweet_enabled</code></td><td>boolean</td><td>Whether auto-retweet is enabled</td></tr><tr><td><code dir="auto">last_sent_at</code></td><td>datetime</td><td>When the account last published a post</td></tr><tr><td><code dir="auto">user_id</code></td><td>integer</td><td>Owner user ID</td></tr><tr><td><code dir="auto">created_at</code></td><td>datetime</td><td>ISO 8601 timestamp</td></tr></tbody></table>
+<table><thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code dir="auto">id</code></td><td>integer</td><td>Unique identifier</td></tr><tr><td><code dir="auto">service_type</code></td><td>string</td><td><code dir="auto">x</code> or <code dir="auto">linkedin</code></td></tr><tr><td><code dir="auto">schedule_type</code></td><td>string</td><td><code dir="auto">send_immediately</code>, <code dir="auto">once_daily</code>, or <code dir="auto">custom</code></td></tr><tr><td><code dir="auto">username</code></td><td>string</td><td>Cached username for the social account</td></tr><tr><td><code dir="auto">auto_retweet_enabled</code></td><td>boolean</td><td>Whether auto-retweet is enabled</td></tr><tr><td><code dir="auto">last_sent_at</code></td><td>datetime</td><td>When the account last published a post</td></tr><tr><td><code dir="auto">created_at</code></td><td>datetime</td><td>ISO 8601 timestamp</td></tr></tbody></table>
 <div class="sl-heading-wrapper level-h3"><h3 id="service-types">Service Types</h3><a class="sl-anchor-link" href="#service-types"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Service Types”</span></a></div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<table><thead><tr><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code dir="auto">x</code></td><td>Direct X (Twitter) API posting via OAuth2</td></tr><tr><td><code dir="auto">linkedin</code></td><td>LinkedIn API posting via OAuth2</td></tr><tr><td><code dir="auto">hypefury_v1</code></td><td>Hypefury cross-posting integration</td></tr></tbody></table>
+<p>|| Type | Description |
+|------|-------------|
+| <code dir="auto">x</code> | X (Twitter) posting via OAuth2 |
+| <code dir="auto">linkedin</code> | LinkedIn posting via OAuth2 |</p>
 <div class="sl-heading-wrapper level-h3"><h3 id="schedule-types">Schedule Types</h3><a class="sl-anchor-link" href="#schedule-types"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Schedule Types”</span></a></div>
 
 
