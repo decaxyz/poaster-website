@@ -92,7 +92,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./out
           destination_dir: pr-preview/${{ github.event.pull_request.number }}
-          keep_files: true
+          keep_files: false
           user_name: eizus
           user_email: hello@cdr.xyz
 
