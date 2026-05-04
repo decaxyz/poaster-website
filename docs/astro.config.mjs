@@ -75,7 +75,7 @@ export default defineConfig({
         },
       ],
       editLink: {
-        baseUrl: 'https://github.com/poaster/poaster-website/edit/master/docs/',
+        baseUrl: 'https://github.com/decaxyz/poaster-website/edit/master/docs/',
       },
     }),
   ],

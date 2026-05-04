@@ -71,9 +71,10 @@ jobs:
 
       - name: Merge docs into Next.js output
         run: |
-          # Astro builds to docs/dist/ with base: '/docs' 
-          # so the output is already under a docs/ subdirectory
-          cp -r docs/dist/* out/
+          # Astro's base only sets URL prefixes — files are at the root of dist/.
+          # Copy into out/docs/ so they're served at /docs/ on the live site.
+          mkdir -p out/docs
+          cp -r docs/dist/* out/docs/
 
       # ── Deploy ──
 
