@@ -31,7 +31,7 @@ Creates a new post. If the website has `auto_approve_posts` enabled, the post is
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | `website_id` | integer | Yes | The website ID (in the URL path) |
-| `content` | string | Yes | The post text. Wrapped in an array internally to support threads |
+| `content` | string | Yes | The post text |
 | `url` | string | No | Source URL for the post. Defaults to the website's `base_url` |
 
 ### Code Examples
@@ -645,20 +645,6 @@ console.log(data);
 
 </TabItem>
 </Tabs>
-
----
-
-## Send Posts Now and Return
-
-```http
-POST /websites/:website_id/posts/send_now_and_return
-```
-
-Same as `send_now` but returns to the compose page in the browser UI. Identical behavior for API requests.
-
-### Parameters
-
-Same as [Send Multiple Posts Now](#send-multiple-posts-now).
 
 ---
 

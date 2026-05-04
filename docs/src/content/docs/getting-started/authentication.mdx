@@ -83,18 +83,14 @@ console.log(response.status); // 200 = valid key
 | Property | Details |
 |----------|---------|
 | **Format** | `po_live_` prefix followed by random characters |
-| **Storage** | SHA256 digest stored in database; raw token shown only once |
+| **Storage** | Raw token is shown only once at creation and cannot be retrieved later |
 | **Expiry** | Optional — set an expiry date when creating the key |
 | **Revocation** | Revoke anytime in Settings; key immediately stops working |
-| **Tracking** | `last_used_at` timestamp updated on each authenticated request |
+| **Tracking** | Usage can be monitored in the Settings → API Keys page |
 
-## Opt-In Model
+## Available Endpoints
 
-API key authentication is **deny-by-default**. Only endpoints explicitly declared with `allow_api_key_access` accept Bearer tokens. This means:
-
-- You can only access the 21 actions documented in the API Reference
-- Dashboard, Settings, Billing, OAuth flows, and all HTML-only views reject API keys with `403`
-- New endpoints must be explicitly opted in by the Poaster team
+API keys work with the endpoints documented in the API Reference. Endpoints not listed there (Dashboard, Settings, Billing, OAuth flows) are web-only and reject API keys with `403`.
 
 ## Security
 

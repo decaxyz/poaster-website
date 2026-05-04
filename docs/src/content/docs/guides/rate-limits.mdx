@@ -3,9 +3,9 @@ title: Rate Limits
 description: Understanding rate limits and best practices for the Poaster API.
 ---
 
-## Current Limits
+## Rate Limits
 
-Poaster does not enforce explicit rate limits on API requests at this time. However, we ask that you follow these guidelines to ensure fair usage and platform stability.
+To ensure fair usage and platform stability, please follow these rate limit guidelines:
 
 ## Recommended Limits
 
@@ -49,9 +49,11 @@ For workflows that poll for status changes, cache responses and only re-fetch wh
 
 Use [bulk endpoints](bulk-operations/) instead of making individual requests for each post. One `bulk_approve` call is better than 50 individual `approve` calls.
 
-## Future Changes
+## Rate Limit Headers
 
-Rate limits may be introduced as the platform scales. If limits are added, they will be communicated via:
-- Response headers (`X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`)
-- This documentation page
-- The [Poaster changelog](https://poaster.userjot.com/updates)
+When rate limits are active, responses include standard headers:
+- `X-RateLimit-Limit` — Request quota for the current window
+- `X-RateLimit-Remaining` — Remaining requests in the current window
+- `X-RateLimit-Reset` — Time (in seconds) until the quota resets
+
+Check the [Poaster changelog](https://poaster.userjot.com/updates) for any updates to rate limit policies.

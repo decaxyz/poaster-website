@@ -249,21 +249,19 @@ console.log(response.status);
 | Field | Type | Description |
 |-------|------|-------------|
 | `id` | integer | Unique identifier |
-| `service_type` | string | `x`, `linkedin`, or `hypefury_v1` |
+| `service_type` | string | `x` or `linkedin` |
 | `schedule_type` | string | `send_immediately`, `once_daily`, or `custom` |
 | `username` | string | Cached username for the social account |
 | `auto_retweet_enabled` | boolean | Whether auto-retweet is enabled |
 | `last_sent_at` | datetime | When the account last published a post |
-| `user_id` | integer | Owner user ID |
 | `created_at` | datetime | ISO 8601 timestamp |
 
 ### Service Types
 
-| Type | Description |
+|| Type | Description |
 |------|-------------|
-| `x` | Direct X (Twitter) API posting via OAuth2 |
-| `linkedin` | LinkedIn API posting via OAuth2 |
-| `hypefury_v1` | Hypefury cross-posting integration |
+| `x` | X (Twitter) posting via OAuth2 |
+| `linkedin` | LinkedIn posting via OAuth2 |
 
 ### Schedule Types
 
