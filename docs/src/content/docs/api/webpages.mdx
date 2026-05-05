@@ -10,7 +10,7 @@ Webpages represent individual articles or URLs submitted to Poaster for AI proce
 ## Create a Webpage
 
 ```http
-POST /websites/:website_id/webpages
+POST /v1/websites/:website_id/webpages
 ```
 
 Submits a URL for AI processing. Poaster fetches the page, extracts key content, and generates post suggestions. If the URL already exists as a webpage under this website, the request is rejected.
@@ -29,7 +29,7 @@ Submits a URL for AI processing. Poaster fetches the page, extracts key content,
 <TabItem label="cURL">
 
 ```bash
-curl -X POST https://my.poaster.app/websites/1/webpages \
+curl -X POST https://my.poaster.app/v1/websites/1/webpages \
   -H "Authorization: Bearer po_live_your_api_key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -44,7 +44,7 @@ curl -X POST https://my.poaster.app/websites/1/webpages \
 import requests
 
 response = requests.post(
-    "https://my.poaster.app/websites/1/webpages",
+    "https://my.poaster.app/v1/websites/1/webpages",
     headers={
         "Authorization": "Bearer po_live_your_api_key",
         "Content-Type": "application/json",
@@ -64,7 +64,7 @@ print(response.json())
 require 'net/http'
 require 'json'
 
-uri = URI('https://my.poaster.app/websites/1/webpages')
+uri = URI('https://my.poaster.app/v1/websites/1/webpages')
 request = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
 request['Authorization'] = 'Bearer po_live_your_api_key'
 request.body = {
@@ -82,7 +82,7 @@ puts response.body
 <TabItem label="JavaScript">
 
 ```javascript
-const response = await fetch("https://my.poaster.app/websites/1/webpages", {
+const response = await fetch("https://my.poaster.app/v1/websites/1/webpages", {
   method: "POST",
   headers: {
     Authorization: "Bearer po_live_your_api_key",
@@ -108,7 +108,7 @@ If you already have the article content and want to skip the URL fetch, pass the
 <TabItem label="cURL">
 
 ```bash
-curl -X POST https://my.poaster.app/websites/1/webpages \
+curl -X POST https://my.poaster.app/v1/websites/1/webpages \
   -H "Authorization: Bearer po_live_your_api_key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -124,7 +124,7 @@ curl -X POST https://my.poaster.app/websites/1/webpages \
 import requests
 
 response = requests.post(
-    "https://my.poaster.app/websites/1/webpages",
+    "https://my.poaster.app/v1/websites/1/webpages",
     headers={
         "Authorization": "Bearer po_live_your_api_key",
         "Content-Type": "application/json",
@@ -144,7 +144,7 @@ print(response.json())
 require 'net/http'
 require 'json'
 
-uri = URI('https://my.poaster.app/websites/1/webpages')
+uri = URI('https://my.poaster.app/v1/websites/1/webpages')
 request = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
 request['Authorization'] = 'Bearer po_live_your_api_key'
 request.body = {
@@ -162,7 +162,7 @@ puts response.body
 <TabItem label="JavaScript">
 
 ```javascript
-const response = await fetch("https://my.poaster.app/websites/1/webpages", {
+const response = await fetch("https://my.poaster.app/v1/websites/1/webpages", {
   method: "POST",
   headers: {
     Authorization: "Bearer po_live_your_api_key",

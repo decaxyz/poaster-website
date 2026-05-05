@@ -32,7 +32,7 @@ API keys are managed in the Poaster web UI:
 
 ```bash
 # Test your key works
-curl https://my.poaster.app/websites/1 \
+curl https://my.poaster.app/v1/websites/1 \
   -H "Authorization: Bearer po_live_your_api_key"
 ```
 
@@ -43,7 +43,7 @@ curl https://my.poaster.app/websites/1 \
 import requests
 
 response = requests.get(
-    "https://my.poaster.app/websites/1",
+    "https://my.poaster.app/v1/websites/1",
     headers={"Authorization": "Bearer po_live_your_api_key"},
 )
 print(response.status_code)  # 200 = valid key
@@ -55,7 +55,7 @@ print(response.status_code)  # 200 = valid key
 ```ruby
 require 'net/http'
 
-uri = URI('https://my.poaster.app/websites/1')
+uri = URI('https://my.poaster.app/v1/websites/1')
 request = Net::HTTP::Get.new(uri)
 request['Authorization'] = 'Bearer po_live_your_api_key'
 
@@ -69,7 +69,7 @@ puts response.code  # 200 = valid key
 <TabItem label="JavaScript">
 
 ```javascript
-const response = await fetch("https://my.poaster.app/websites/1", {
+const response = await fetch("https://my.poaster.app/v1/websites/1", {
   headers: { Authorization: "Bearer po_live_your_api_key" },
 });
 console.log(response.status); // 200 = valid key

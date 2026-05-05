@@ -45,20 +45,20 @@ HEADERS = {
 
 # 1. Create a post
 post_resp = requests.post(
-    f"{BASE}/websites/{website_id}/posts",
+    f"{BASE}/v1/websites/{website_id}/posts",
     headers=HEADERS,
     json={"content": "Your post text here"},
 )
 
 # 2. Approve it (if not auto-approved)
 requests.patch(
-    f"{BASE}/websites/{website_id}/posts/{post_id}/approve",
+    f"{BASE}/v1/websites/{website_id}/posts/{post_id}/approve",
     headers=HEADERS,
 )
 
 # 3. Send it
 requests.patch(
-    f"{BASE}/websites/{website_id}/posts/{post_id}/send_now_individual",
+    f"{BASE}/v1/websites/{website_id}/posts/{post_id}/send_now_individual",
     headers=HEADERS,
 )
 ```
@@ -72,7 +72,7 @@ For agents managing high-volume content:
 post_ids = []
 for content in articles:
     resp = requests.post(
-        f"{BASE}/websites/{website_id}/posts",
+        f"{BASE}/v1/websites/{website_id}/posts",
         headers=HEADERS,
         json={"content": content},
     )
@@ -80,14 +80,14 @@ for content in articles:
 
 # 2. Bulk approve
 requests.patch(
-    f"{BASE}/websites/{website_id}/posts/bulk_approve",
+    f"{BASE}/v1/websites/{website_id}/posts/bulk_approve",
     headers=HEADERS,
     json={"post_ids": post_ids},
 )
 
 # 3. Send all
 requests.post(
-    f"{BASE}/websites/{website_id}/posts/send_now",
+    f"{BASE}/v1/websites/{website_id}/posts/send_now",
     headers=HEADERS,
     json={"post_ids": post_ids},
 )
@@ -100,7 +100,7 @@ When OAuth tokens expire, posts fail to publish. Agents should handle this:
 ```python
 # If publishing fails, try refreshing the OAuth token
 requests.patch(
-    f"{BASE}/share_accounts/{account_id}/x_oauth_refresh",
+    f"{BASE}/v1/share_accounts/{account_id}/x_oauth_refresh",
     headers=HEADERS,
 )
 # Then retry the send

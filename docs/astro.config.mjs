@@ -47,6 +47,7 @@ export default defineConfig({
           label: 'Guides',
           items: [
             { label: 'Bulk Operations', slug: 'guides/bulk-operations' },
+            { label: 'API Versioning', slug: 'guides/api-versioning' },
             { label: 'Rate Limits', slug: 'guides/rate-limits' },
             { label: 'Errors', slug: 'guides/errors' },
           ],

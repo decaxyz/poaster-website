@@ -50,10 +50,12 @@ Account
 All API requests are made to:
 
 ```
-https://my.poaster.app
+https://my.poaster.app/v1
 ```
 
-The API uses the same routes as the web application. When you include a `Bearer` token in the `Authorization` header, the server returns JSON responses instead of HTML.
+All endpoints are versioned under `/v1/`. When breaking changes are introduced, a new version prefix (e.g., `/v2/`) will be created alongside the existing version. See [API Versioning](../guides/api-versioning/) for details.
+
+When you include a `Bearer` token in the `Authorization` header, the server returns JSON responses instead of HTML.
 
 ## Next Steps
 

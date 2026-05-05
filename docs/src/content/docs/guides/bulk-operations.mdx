@@ -11,10 +11,10 @@ Poaster provides bulk endpoints for processing multiple posts in a single reques
 
 | Endpoint | Method | Action |
 |----------|--------|--------|
-| `/websites/:id/posts/bulk_approve` | `PATCH` | Approve multiple posts |
-| `/websites/:website_id/posts/bulk_reject` | `PATCH` | Reject multiple posts |
-| `/websites/:website_id/posts/bulk_re_enqueue` | `PATCH` | Re-enqueue multiple posts |
-| `/websites/:website_id/posts/send_now` | `POST` | Send multiple posts now |
+| `/v1/websites/:id/posts/bulk_approve` | `PATCH` | Approve multiple posts |
+| `/v1/websites/:website_id/posts/bulk_reject` | `PATCH` | Reject multiple posts |
+| `/v1/websites/:website_id/posts/bulk_re_enqueue` | `PATCH` | Re-enqueue multiple posts |
+| `/v1/websites/:website_id/posts/send_now` | `POST` | Send multiple posts now |
 
 ## Request Format
 
@@ -35,13 +35,13 @@ A common workflow is to approve all pending posts and then send them:
 
 ```bash
 # Step 1: Bulk approve
-curl -X PATCH https://my.poaster.app/websites/1/posts/bulk_approve \
+curl -X PATCH https://my.poaster.app/v1/websites/1/posts/bulk_approve \
   -H "Authorization: Bearer po_live_your_api_key" \
   -H "Content-Type: application/json" \
   -d '{"post_ids": [42, 43, 44]}'
 
 # Step 2: Send them
-curl -X POST https://my.poaster.app/websites/1/posts/send_now \
+curl -X POST https://my.poaster.app/v1/websites/1/posts/send_now \
   -H "Authorization: Bearer po_live_your_api_key" \
   -H "Content-Type: application/json" \
   -d '{"post_ids": [42, 43, 44]}'
@@ -62,10 +62,10 @@ HEADERS = {
 post_ids = [42, 43, 44]
 
 # Step 1: Bulk approve
-requests.patch(f"{BASE}/websites/1/posts/bulk_approve", headers=HEADERS, json={"post_ids": post_ids})
+requests.patch(f"{BASE}/v1/websites/1/posts/bulk_approve", headers=HEADERS, json={"post_ids": post_ids})
 
 # Step 2: Send them
-requests.post(f"{BASE}/websites/1/posts/send_now", headers=HEADERS, json={"post_ids": post_ids})
+requests.post(f"{BASE}/v1/websites/1/posts/send_now", headers=HEADERS, json={"post_ids": post_ids})
 ```
 
 </TabItem>
@@ -79,14 +79,14 @@ BASE = 'https://my.poaster.app'
 post_ids = [42, 43, 44]
 
 # Step 1: Bulk approve
-uri = URI("#{BASE}/websites/1/posts/bulk_approve")
+uri = URI("#{BASE}/v1/websites/1/posts/bulk_approve")
 request = Net::HTTP::Patch.new(uri, 'Content-Type' => 'application/json')
 request['Authorization'] = 'Bearer po_live_your_api_key'
 request.body = { post_ids: post_ids }.to_json
 Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(request) }
 
 # Step 2: Send them
-uri = URI("#{BASE}/websites/1/posts/send_now")
+uri = URI("#{BASE}/v1/websites/1/posts/send_now")
 request = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
 request['Authorization'] = 'Bearer po_live_your_api_key'
 request.body = { post_ids: post_ids }.to_json
@@ -105,14 +105,14 @@ const HEADERS = {
 const postIds = [42, 43, 44];
 
 // Step 1: Bulk approve
-await fetch(`${BASE}/websites/1/posts/bulk_approve`, {
+await fetch(`${BASE}/v1/websites/1/posts/bulk_approve`, {
   method: "PATCH",
   headers: HEADERS,
   body: JSON.stringify({ post_ids: postIds }),
 });
 
 // Step 2: Send them
-await fetch(`${BASE}/websites/1/posts/send_now`, {
+await fetch(`${BASE}/v1/websites/1/posts/send_now`, {
   method: "POST",
   headers: HEADERS,
   body: JSON.stringify({ post_ids: postIds }),

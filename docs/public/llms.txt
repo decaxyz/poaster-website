@@ -6,6 +6,8 @@
 
 https://my.poaster.app
 
+All endpoints are versioned under `/v1/`. Full example: `https://my.poaster.app/v1/websites`
+
 ## Authentication
 
 All requests require a Bearer token in the Authorization header.
@@ -24,38 +26,38 @@ Only the endpoints documented below accept API keys. Other endpoints return 403.
 
 | Method | Path | Description |
 |--------|------|-------------|
-| POST | /websites | Create a website. Params: website[base_url], website[website_type] (generic or substack) |
-| PATCH | /websites/:id/retry | Re-queue website for AI evaluation |
-| DELETE | /websites/:id | Delete a website permanently |
+| POST | /v1/websites | Create a website. Params: website[base_url], website[website_type] (generic or substack) |
+| PATCH | /v1/websites/:id/retry | Re-queue website for AI evaluation |
+| DELETE | /v1/websites/:id | Delete a website permanently |
 
 ### Webpages
 
 | Method | Path | Description |
 |--------|------|-------------|
-| POST | /websites/:website_id/webpages | Submit a URL for AI processing. Params: url (required), content (optional) |
+| POST | /v1/websites/:website_id/webpages | Submit a URL for AI processing. Params: url (required), content (optional) |
 
 ### Posts
 
 | Method | Path | Description |
 |--------|------|-------------|
-| POST | /websites/:website_id/posts | Create a post. Params: content (required), url (optional) |
-| PATCH | /websites/:website_id/posts/:id | Update post content. Params: content (string or array). Cannot update sent posts |
-| PATCH | /websites/:website_id/posts/:id/approve | Approve a post (pending/rejected -> approved) |
-| PATCH | /websites/:website_id/posts/:id/reject | Reject a post |
-| PATCH | /websites/:website_id/posts/:id/re_enqueue | Re-enqueue a post (-> approved, clears sent_at) |
-| PATCH | /websites/:website_id/posts/:id/send_now_individual | Send post immediately. Requires share accounts |
-| POST | /websites/:website_id/posts/send_now | Send multiple posts. Params: post_ids (array) |
-| PATCH | /websites/:website_id/posts/bulk_approve | Bulk approve. Params: post_ids (array) |
-| PATCH | /websites/:website_id/posts/bulk_reject | Bulk reject. Params: post_ids (array) |
-| PATCH | /websites/:website_id/posts/bulk_re_enqueue | Bulk re-enqueue. Params: post_ids (array) |
+| POST | /v1/websites/:website_id/posts | Create a post. Params: content (required), url (optional) |
+| PATCH | /v1/websites/:website_id/posts/:id | Update post content. Params: content (string or array). Cannot update sent posts |
+| PATCH | /v1/websites/:website_id/posts/:id/approve | Approve a post (pending/rejected -> approved) |
+| PATCH | /v1/websites/:website_id/posts/:id/reject | Reject a post |
+| PATCH | /v1/websites/:website_id/posts/:id/re_enqueue | Re-enqueue a post (-> approved, clears sent_at) |
+| PATCH | /v1/websites/:website_id/posts/:id/send_now_individual | Send post immediately. Requires share accounts |
+| POST | /v1/websites/:website_id/posts/send_now | Send multiple posts. Params: post_ids (array) |
+| PATCH | /v1/websites/:website_id/posts/bulk_approve | Bulk approve. Params: post_ids (array) |
+| PATCH | /v1/websites/:website_id/posts/bulk_reject | Bulk reject. Params: post_ids (array) |
+| PATCH | /v1/websites/:website_id/posts/bulk_re_enqueue | Bulk re-enqueue. Params: post_ids (array) |
 
 ### Share Accounts
 
 | Method | Path | Description |
 |--------|------|-------------|
-| DELETE | /share_accounts/:id | Delete a share account |
-| PATCH | /share_accounts/:id/x_oauth_refresh | Refresh X (Twitter) OAuth2 token |
-| PATCH | /share_accounts/:id/linkedin_oauth_refresh | Refresh LinkedIn OAuth2 token |
+| DELETE | /v1/share_accounts/:id | Delete a share account |
+| PATCH | /v1/share_accounts/:id/x_oauth_refresh | Refresh X (Twitter) OAuth2 token |
+| PATCH | /v1/share_accounts/:id/linkedin_oauth_refresh | Refresh LinkedIn OAuth2 token |
 
 ## Post Statuses
 
@@ -68,6 +70,10 @@ queued -> in_progress -> done. failed can be retried.
 ## Service Types
 
 x, linkedin
+
+## API Versioning
+
+All API endpoints are versioned under `/v1/`. When breaking changes are introduced, a new version prefix will be created (e.g., `/v2/`) alongside the existing version. Old versions will receive a `Deprecation` header with a `Sunset` date before removal.
 
 ## Error Codes
 

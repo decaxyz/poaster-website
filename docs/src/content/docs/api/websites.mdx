@@ -10,7 +10,7 @@ Websites represent publishing destinations where your content appears. Each webs
 ## Create a Website
 
 ```http
-POST /websites
+POST /v1/websites
 ```
 
 Creates a new website and enqueues it for AI evaluation. Poaster's AI will analyze the site and generate social media posts from its content.
@@ -28,7 +28,7 @@ Creates a new website and enqueues it for AI evaluation. Poaster's AI will analy
 <TabItem label="cURL">
 
 ```bash
-curl -X POST https://my.poaster.app/websites \
+curl -X POST https://my.poaster.app/v1/websites \
   -H "Authorization: Bearer po_live_your_api_key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -46,7 +46,7 @@ curl -X POST https://my.poaster.app/websites \
 import requests
 
 response = requests.post(
-    "https://my.poaster.app/websites",
+    "https://my.poaster.app/v1/websites",
     headers={
         "Authorization": "Bearer po_live_your_api_key",
         "Content-Type": "application/json",
@@ -69,7 +69,7 @@ print(response.json())
 require 'net/http'
 require 'json'
 
-uri = URI('https://my.poaster.app/websites')
+uri = URI('https://my.poaster.app/v1/websites')
 request = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
 request['Authorization'] = 'Bearer po_live_your_api_key'
 request.body = {
@@ -90,7 +90,7 @@ puts response.body
 <TabItem label="JavaScript">
 
 ```javascript
-const response = await fetch("https://my.poaster.app/websites", {
+const response = await fetch("https://my.poaster.app/v1/websites", {
   method: "POST",
   headers: {
     Authorization: "Bearer po_live_your_api_key",
@@ -128,7 +128,7 @@ On success, the website is created and queued for evaluation. The response redir
 ## Retry Website Evaluation
 
 ```http
-PATCH /websites/:id/retry
+PATCH /v1/websites/:id/retry
 ```
 
 Re-queues a website for AI evaluation. Useful when the initial evaluation failed or you want to re-analyze the site.
@@ -145,7 +145,7 @@ Re-queues a website for AI evaluation. Useful when the initial evaluation failed
 <TabItem label="cURL">
 
 ```bash
-curl -X PATCH https://my.poaster.app/websites/1/retry \
+curl -X PATCH https://my.poaster.app/v1/websites/1/retry \
   -H "Authorization: Bearer po_live_your_api_key"
 ```
 
@@ -156,7 +156,7 @@ curl -X PATCH https://my.poaster.app/websites/1/retry \
 import requests
 
 response = requests.patch(
-    "https://my.poaster.app/websites/1/retry",
+    "https://my.poaster.app/v1/websites/1/retry",
     headers={"Authorization": "Bearer po_live_your_api_key"},
 )
 print(response.status_code)
@@ -168,7 +168,7 @@ print(response.status_code)
 ```ruby
 require 'net/http'
 
-uri = URI('https://my.poaster.app/websites/1/retry')
+uri = URI('https://my.poaster.app/v1/websites/1/retry')
 request = Net::HTTP::Patch.new(uri)
 request['Authorization'] = 'Bearer po_live_your_api_key'
 
@@ -182,7 +182,7 @@ puts response.code
 <TabItem label="JavaScript">
 
 ```javascript
-const response = await fetch("https://my.poaster.app/websites/1/retry", {
+const response = await fetch("https://my.poaster.app/v1/websites/1/retry", {
   method: "PATCH",
   headers: { Authorization: "Bearer po_live_your_api_key" },
 });
@@ -205,7 +205,7 @@ console.log(response.status);
 ## Delete a Website
 
 ```http
-DELETE /websites/:id
+DELETE /v1/websites/:id
 ```
 
 Permanently deletes a website and all its associated webpages and posts. This action is irreversible.
@@ -222,7 +222,7 @@ Permanently deletes a website and all its associated webpages and posts. This ac
 <TabItem label="cURL">
 
 ```bash
-curl -X DELETE https://my.poaster.app/websites/1 \
+curl -X DELETE https://my.poaster.app/v1/websites/1 \
   -H "Authorization: Bearer po_live_your_api_key"
 ```
 
@@ -233,7 +233,7 @@ curl -X DELETE https://my.poaster.app/websites/1 \
 import requests
 
 response = requests.delete(
-    "https://my.poaster.app/websites/1",
+    "https://my.poaster.app/v1/websites/1",
     headers={"Authorization": "Bearer po_live_your_api_key"},
 )
 print(response.status_code)
@@ -245,7 +245,7 @@ print(response.status_code)
 ```ruby
 require 'net/http'
 
-uri = URI('https://my.poaster.app/websites/1')
+uri = URI('https://my.poaster.app/v1/websites/1')
 request = Net::HTTP::Delete.new(uri)
 request['Authorization'] = 'Bearer po_live_your_api_key'
 
@@ -259,7 +259,7 @@ puts response.code
 <TabItem label="JavaScript">
 
 ```javascript
-const response = await fetch("https://my.poaster.app/websites/1", {
+const response = await fetch("https://my.poaster.app/v1/websites/1", {
   method: "DELETE",
   headers: { Authorization: "Bearer po_live_your_api_key" },
 });
