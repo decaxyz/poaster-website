@@ -42,7 +42,7 @@ jobs:
           node-version: "22"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
 
-      - name: Restore cache
+      - name: Restore Next.js cache
         uses: actions/cache@v4
         with:
           path: |
@@ -51,11 +51,32 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
 
-      - name: Install dependencies
+      # ── Build Next.js site ──
+
+      - name: Install Next.js dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
 
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
+
+      # ── Build Astro docs site ──
+
+      - name: Install Astro docs dependencies
+        working-directory: docs
+        run: npm ci
+
+      - name: Build Astro docs
+        working-directory: docs
+        run: npm run build
+
+      - name: Merge docs into Next.js output
+        run: |
+          # Astro's base only sets URL prefixes — files are at the root of dist/.
+          # Copy into out/docs/ so they're served at /docs/ on the live site.
+          mkdir -p out/docs
+          cp -r docs/dist/* out/docs/
+
+      # ── Deploy ──
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4

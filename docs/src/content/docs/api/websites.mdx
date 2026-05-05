@@ -1,0 +1,293 @@
+---
+title: Websites
+description: API reference for managing publishing destinations (websites). Create, retry evaluation, and delete websites.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Websites represent publishing destinations where your content appears. Each website is connected to share accounts (X, LinkedIn) that publish its posts.
+
+## Create a Website
+
+```http
+POST /v1/websites
+```
+
+Creates a new website and enqueues it for AI evaluation. Poaster's AI will analyze the site and generate social media posts from its content.
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `website[base_url]` | string | Yes | The URL of the website (e.g., `https://myblog.substack.com`) |
+| `website[website_type]` | string | Yes | Type of website: `generic` or `substack` |
+
+### Code Examples
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X POST https://my.poaster.app/v1/websites \
+  -H "Authorization: Bearer po_live_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "website": {
+      "base_url": "https://myblog.substack.com",
+      "website_type": "substack"
+    }
+  }'
+```
+
+</TabItem>
+<TabItem label="Python">
+
+```python
+import requests
+
+response = requests.post(
+    "https://my.poaster.app/v1/websites",
+    headers={
+        "Authorization": "Bearer po_live_your_api_key",
+        "Content-Type": "application/json",
+    },
+    json={
+        "website": {
+            "base_url": "https://myblog.substack.com",
+            "website_type": "substack",
+        }
+    },
+)
+print(response.status_code)
+print(response.json())
+```
+
+</TabItem>
+<TabItem label="Ruby">
+
+```ruby
+require 'net/http'
+require 'json'
+
+uri = URI('https://my.poaster.app/v1/websites')
+request = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
+request['Authorization'] = 'Bearer po_live_your_api_key'
+request.body = {
+  website: {
+    base_url: 'https://myblog.substack.com',
+    website_type: 'substack'
+  }
+}.to_json
+
+response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(request)
+end
+puts response.code
+puts response.body
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch("https://my.poaster.app/v1/websites", {
+  method: "POST",
+  headers: {
+    Authorization: "Bearer po_live_your_api_key",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    website: {
+      base_url: "https://myblog.substack.com",
+      website_type: "substack",
+    },
+  }),
+});
+console.log(response.status);
+const data = await response.json();
+console.log(data);
+```
+
+</TabItem>
+</Tabs>
+
+### Response
+
+On success, the website is created and queued for evaluation. The response redirects to the website page (for browser requests) or returns JSON (for API requests).
+
+### Errors
+
+| Status | Cause |
+|--------|-------|
+| `401` | Invalid or missing API key |
+| `403` | Plan limit reached for websites |
+| `422` | Validation error (missing base_url or website_type) |
+
+---
+
+## Retry Website Evaluation
+
+```http
+PATCH /v1/websites/:id/retry
+```
+
+Re-queues a website for AI evaluation. Useful when the initial evaluation failed or you want to re-analyze the site.
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `id` | integer | Yes | The website ID (in the URL path) |
+
+### Code Examples
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X PATCH https://my.poaster.app/v1/websites/1/retry \
+  -H "Authorization: Bearer po_live_your_api_key"
+```
+
+</TabItem>
+<TabItem label="Python">
+
+```python
+import requests
+
+response = requests.patch(
+    "https://my.poaster.app/v1/websites/1/retry",
+    headers={"Authorization": "Bearer po_live_your_api_key"},
+)
+print(response.status_code)
+```
+
+</TabItem>
+<TabItem label="Ruby">
+
+```ruby
+require 'net/http'
+
+uri = URI('https://my.poaster.app/v1/websites/1/retry')
+request = Net::HTTP::Patch.new(uri)
+request['Authorization'] = 'Bearer po_live_your_api_key'
+
+response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(request)
+end
+puts response.code
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch("https://my.poaster.app/v1/websites/1/retry", {
+  method: "PATCH",
+  headers: { Authorization: "Bearer po_live_your_api_key" },
+});
+console.log(response.status);
+```
+
+</TabItem>
+</Tabs>
+
+### Errors
+
+| Status | Cause |
+|--------|-------|
+| `401` | Invalid or missing API key |
+| `403` | Website belongs to another user |
+| `404` | Website not found |
+
+---
+
+## Delete a Website
+
+```http
+DELETE /v1/websites/:id
+```
+
+Permanently deletes a website and all its associated webpages and posts. This action is irreversible.
+
+### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `id` | integer | Yes | The website ID (in the URL path) |
+
+### Code Examples
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X DELETE https://my.poaster.app/v1/websites/1 \
+  -H "Authorization: Bearer po_live_your_api_key"
+```
+
+</TabItem>
+<TabItem label="Python">
+
+```python
+import requests
+
+response = requests.delete(
+    "https://my.poaster.app/v1/websites/1",
+    headers={"Authorization": "Bearer po_live_your_api_key"},
+)
+print(response.status_code)
+```
+
+</TabItem>
+<TabItem label="Ruby">
+
+```ruby
+require 'net/http'
+
+uri = URI('https://my.poaster.app/v1/websites/1')
+request = Net::HTTP::Delete.new(uri)
+request['Authorization'] = 'Bearer po_live_your_api_key'
+
+response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(request)
+end
+puts response.code
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch("https://my.poaster.app/v1/websites/1", {
+  method: "DELETE",
+  headers: { Authorization: "Bearer po_live_your_api_key" },
+});
+console.log(response.status);
+```
+
+</TabItem>
+</Tabs>
+
+### Errors
+
+| Status | Cause |
+|--------|-------|
+| `401` | Invalid or missing API key |
+| `403` | Website belongs to another user |
+| `404` | Website not found |
+
+---
+
+## Website Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Unique identifier |
+| `base_url` | string | The website URL |
+| `website_type` | string | `generic` or `substack` |
+| `status` | string | `queued`, `in_progress`, `done`, or `failed` |
+| `display_name` | string | Human-readable name |
+| `auto_approve_posts` | boolean | Whether posts are auto-approved |
+| `next_post_selection` | string | `first_approved` or `random` |
+| `created_at` | datetime | ISO 8601 timestamp |

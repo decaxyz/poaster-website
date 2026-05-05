@@ -1,0 +1,63 @@
+---
+title: Overview
+description: Introduction to the Poaster API — what it is, what it enables, and who it's for.
+---
+
+The Poaster API lets you programmatically manage your social media content through Poaster. Create websites, submit content for AI processing, approve and schedule posts, and manage share accounts — all via HTTP requests with an API key.
+
+## What is Poaster?
+
+Poaster is an AI-powered social media automation platform for writers. It turns long-form articles into viral social media posts by:
+
+1. **Ingesting** content from your blog or Substack
+2. **Processing** it with AI to extract the best quotes and insights
+3. **Generating** platform-ready posts in your voice
+4. **Scheduling** and **publishing** to X (Twitter) and LinkedIn
+
+## What the API Enables
+
+- **Programmatic content management** — Create websites and posts without touching the UI
+- **Automation workflows** — Approve and publish posts on a schedule
+- **AI agent integration** — Build tools that interact with Poaster on your behalf
+- **Bulk operations** — Process many posts at once with batch endpoints
+
+## Architecture
+
+Poaster's data model follows a clear hierarchy:
+
+```
+Account
+ └── Websites (publishing destinations)
+      ├── Webpages (source content / articles)
+      │    └── Posts (social media content derived from articles)
+      └── Share Accounts (X, LinkedIn connections)
+```
+
+- A **Website** represents a publishing source (e.g., your Substack)
+- A **Webpage** is an individual article or URL submitted for processing
+- A **Post** is a piece of social media content (text, thread) ready for publishing
+- A **Share Account** is a connected social media account (X, LinkedIn)
+
+## Who It's For
+
+- **Developers** building integrations with Poaster
+- **Automation engineers** setting up content pipelines
+- **AI agent builders** creating tools that manage social media programmatically
+- **Power users** who prefer the command line over the web UI
+
+## Base URL
+
+All API requests are made to:
+
+```
+https://my.poaster.app/v1
+```
+
+All endpoints are versioned under `/v1/`. When breaking changes are introduced, a new version prefix (e.g., `/v2/`) will be created alongside the existing version. See [API Versioning](../guides/api-versioning/) for details.
+
+When you include a `Bearer` token in the `Authorization` header, the server returns JSON responses instead of HTML.
+
+## Next Steps
+
+- [Quick Start](quickstart/) — Make your first API call in 5 minutes
+- [Authentication](authentication/) — Learn about API keys and auth

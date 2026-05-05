@@ -1,0 +1,16 @@
+/* Poaster API Docs — Custom Styles */
+
+/* ── Code Tabs ── */
+starlight-tabs {
+  margin-top: 1rem;
+}
+
+starlight-tab-panel pre {
+  margin-top: 0;
+  border-top-left-radius: 0;
+}
+
+/* ── Logo sizing ── */
+.site-title img {
+  height: 1.5rem;
+}

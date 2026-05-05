@@ -44,7 +44,7 @@ jobs:
           node-version: "22"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
 
-      - name: Restore cache
+      - name: Restore Next.js cache
         uses: actions/cache@v4
         with:
           path: |
@@ -53,13 +53,35 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
 
-      - name: Install dependencies
+      # ── Build Next.js site ──
+
+      - name: Install Next.js dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
 
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
         env:
           NEXT_PUBLIC_BASE_PATH: /pr-preview/${{ github.event.pull_request.number }}
+
+      # ── Build Astro docs site ──
+
+      - name: Install Astro docs dependencies
+        working-directory: docs
+        run: npm ci
+
+      - name: Build Astro docs (preview)
+        working-directory: docs
+        run: npm run build
+        env:
+          # Override the site base for PR preview deployment
+          ASTRO_BASE: /pr-preview/${{ github.event.pull_request.number }}/docs
+
+      - name: Merge docs into Next.js output
+        run: |
+          # Astro's base only sets URL prefixes — files are at the root of dist/.
+          # Copy into out/docs/ so they're served at /docs/ in the preview.
+          mkdir -p out/docs
+          cp -r docs/dist/* out/docs/
 
       - name: Remove CNAME from preview build
         run: rm -f ./out/CNAME
@@ -70,7 +92,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./out
           destination_dir: pr-preview/${{ github.event.pull_request.number }}
-          keep_files: true
+          keep_files: false
           user_name: eizus
           user_email: hello@cdr.xyz
 
@@ -83,7 +105,8 @@ jobs:
 
             | URL | Status |
             |-----|--------|
-            | [Preview](https://cdrxyz.github.io/poaster-website/pr-preview/${{ github.event.pull_request.number }}/) | Ready |
+            | [Site](https://poaster.app/pr-preview/${{ github.event.pull_request.number }}/) | Ready |
+            | [API Docs](https://poaster.app/pr-preview/${{ github.event.pull_request.number }}/docs/) | Ready |
 
             Preview will update automatically when you push more commits.
           edit-mode: replace

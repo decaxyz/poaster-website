@@ -1,0 +1,56 @@
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+/**
+ * CodeTabs — reusable multi-language code example tabs.
+ *
+ * @example
+ * <CodeTabs>
+ *   <Fragment slot="curl">curl ...</Fragment>
+ *   <Fragment slot="python">import requests...</Fragment>
+ *   <Fragment slot="javascript">fetch(...)</Fragment>
+ *   <Fragment slot="ruby">require 'net/http'...</Fragment>
+ * </CodeTabs>
+ */
+
+const { curl, python, javascript, ruby } = Astro.props;
+---
+
+<Tabs>
+  {
+    curl && (
+      <TabItem label="cURL">
+        ```bash
+        {curl}
+        ```
+      </TabItem>
+    )
+  }
+  {
+    python && (
+      <TabItem label="Python">
+        ```python
+        {python}
+        ```
+      </TabItem>
+    )
+  }
+  {
+    javascript && (
+      <TabItem label="JavaScript">
+        ```javascript
+        {javascript}
+        ```
+      </TabItem>
+    )
+  }
+  {
+    ruby && (
+      <TabItem label="Ruby">
+        ```ruby
+        {ruby}
+        ```
+      </TabItem>
+    )
+  }
+</Tabs>

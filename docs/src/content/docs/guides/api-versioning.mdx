@@ -1,0 +1,85 @@
+---
+title: API Versioning
+description: How Poaster versions its API, deprecation policies, and migration guides.
+---
+
+## Current Version
+
+All Poaster API endpoints are versioned under the `/v1/` path prefix. Always use versioned endpoints in production integrations.
+
+```
+https://my.poaster.app/v1/websites
+https://my.poaster.app/v1/websites/:website_id/posts
+https://my.poaster.app/v1/share_accounts/:id
+```
+
+## Versioning Strategy
+
+Poaster uses **URL path versioning**. When breaking changes are introduced, a new version prefix (e.g., `/v2/`) will be created alongside the existing version.
+
+### What counts as a breaking change
+
+- Removing an endpoint
+- Removing or renaming a field from a response
+- Changing a field's type
+- Adding a new required parameter
+
+### What is NOT a breaking change
+
+- Adding new optional parameters
+- Adding new fields to responses
+- Adding new endpoints
+- Changing the order of fields in a JSON response
+
+Non-breaking changes are deployed without a new version and do not require migration.
+
+## Deprecation Policy
+
+When a version is deprecated:
+
+1. A `Deprecation` header is added to responses on the old version
+2. A `Sunset` header indicates the removal date
+3. The old version continues to work for at least **90 days** after deprecation
+4. After the sunset date, the old version returns `410 Gone`
+
+### Example Deprecation Response
+
+```http
+HTTP/1.1 200 OK
+Deprecation: true
+Sunset: Sat, 01 Aug 2026 00:00:00 GMT
+Link: </v1/websites>; rel="successor-version"
+Content-Type: application/json
+```
+
+## Unversioned Routes (Legacy)
+
+The original unversioned routes (e.g., `/websites/:id`) are deprecated in favor of `/v1/` equivalents. These routes:
+
+- Still function and accept API key authentication
+- Return a `Deprecation: true` header with a `Sunset` date
+- Will be removed after the sunset date
+
+We recommend migrating all integrations to `/v1/` endpoints as soon as possible.
+
+### Migration Table
+
+| Old Route | New Route |
+|-----------|-----------|
+| `POST /websites` | `POST /v1/websites` |
+| `PATCH /websites/:id/retry` | `PATCH /v1/websites/:id/retry` |
+| `DELETE /websites/:id` | `DELETE /v1/websites/:id` |
+| `POST /websites/:website_id/webpages` | `POST /v1/websites/:website_id/webpages` |
+| `POST /websites/:website_id/posts` | `POST /v1/websites/:website_id/posts` |
+| `PATCH /websites/:website_id/posts/:id` | `PATCH /v1/websites/:website_id/posts/:id` |
+| `PATCH /websites/:website_id/posts/:id/approve` | `PATCH /v1/websites/:website_id/posts/:id/approve` |
+| `PATCH /websites/:website_id/posts/:id/reject` | `PATCH /v1/websites/:website_id/posts/:id/reject` |
+| `PATCH /websites/:website_id/posts/:id/re_enqueue` | `PATCH /v1/websites/:website_id/posts/:id/re_enqueue` |
+| `PATCH /websites/:website_id/posts/:id/send_now_individual` | `PATCH /v1/websites/:website_id/posts/:id/send_now_individual` |
+| `POST /websites/:website_id/posts/send_now` | `POST /v1/websites/:website_id/posts/send_now` |
+| `PATCH /websites/:website_id/posts/bulk_approve` | `PATCH /v1/websites/:website_id/posts/bulk_approve` |
+| `PATCH /websites/:website_id/posts/bulk_reject` | `PATCH /v1/websites/:website_id/posts/bulk_reject` |
+| `PATCH /websites/:website_id/posts/bulk_re_enqueue` | `PATCH /v1/websites/:website_id/posts/bulk_re_enqueue` |
+| `DELETE /share_accounts/:id` | `DELETE /v1/share_accounts/:id` |
+| `PATCH /share_accounts/:id/x_oauth_refresh` | `PATCH /v1/share_accounts/:id/x_oauth_refresh` |
+| `PATCH /share_accounts/:id/linkedin_oauth_refresh` | `PATCH /v1/share_accounts/:id/linkedin_oauth_refresh` |
